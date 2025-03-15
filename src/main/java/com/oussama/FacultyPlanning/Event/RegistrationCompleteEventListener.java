@@ -1,8 +1,8 @@
 package com.oussama.FacultyPlanning.Event;
 
-import com.oussama.FacultyPlanning.Email.EmailVerification;
-import com.oussama.FacultyPlanning.Email.EmailVerificationService;
-import com.oussama.FacultyPlanning.User.User;
+import com.oussama.FacultyPlanning.Model.EmailVerification;
+import com.oussama.FacultyPlanning.Service.EmailVerificationService;
+import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Utility.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;

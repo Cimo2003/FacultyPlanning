@@ -1,6 +1,6 @@
 package com.oussama.FacultyPlanning.Configuration;
 
-import com.oussama.FacultyPlanning.User.UserRepository;
+import com.oussama.FacultyPlanning.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

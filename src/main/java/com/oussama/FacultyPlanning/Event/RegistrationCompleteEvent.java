@@ -1,6 +1,6 @@
 package com.oussama.FacultyPlanning.Event;
 
-import com.oussama.FacultyPlanning.User.User;
+import com.oussama.FacultyPlanning.Model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

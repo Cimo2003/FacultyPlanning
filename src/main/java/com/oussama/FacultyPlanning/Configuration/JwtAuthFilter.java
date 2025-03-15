@@ -1,6 +1,6 @@
 package com.oussama.FacultyPlanning.Configuration;
 
-import com.oussama.FacultyPlanning.Token.TokenBlacklistService;
+import com.oussama.FacultyPlanning.Service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

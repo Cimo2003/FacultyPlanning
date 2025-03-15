@@ -1,6 +1,6 @@
 package com.oussama.FacultyPlanning.Configuration;
 
-import com.oussama.FacultyPlanning.User.User;
+import com.oussama.FacultyPlanning.Model.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
