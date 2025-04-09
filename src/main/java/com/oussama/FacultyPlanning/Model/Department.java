@@ -1,5 +1,7 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +20,7 @@ public class Department {
     private String name;
     @ManyToOne
     @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Faculty faculty;
 }

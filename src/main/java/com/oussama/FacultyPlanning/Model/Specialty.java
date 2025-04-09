@@ -1,5 +1,6 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.oussama.FacultyPlanning.Enum.LVL;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,9 @@ public class Specialty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Enumerated
+    private LVL level;
     @ManyToOne
-    @JoinColumn(name = "level_id")
-    private Level level;
+    @JoinColumn(name = "department_id")
+    private Department department;
 }

@@ -1,5 +1,7 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oussama.FacultyPlanning.Enum.RoomType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,8 +20,11 @@ public class Room {
     private Long id;
     private String code;
     @Enumerated
+    @Column(updatable = false)
     private RoomType type;
     @ManyToOne
     @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Faculty faculty;
 }

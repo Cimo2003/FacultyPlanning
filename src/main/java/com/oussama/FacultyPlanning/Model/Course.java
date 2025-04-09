@@ -1,5 +1,6 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oussama.FacultyPlanning.Enum.RoomType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,8 @@ public class Course {
     @Enumerated
     private RoomType type;
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
@@ -32,4 +33,5 @@ public class Course {
     private User user;
     @ManyToMany(mappedBy = "courses")
     private Set<Group> groups = new HashSet<>();
+    private short hours_per_group;
 }

@@ -1,12 +1,12 @@
 package com.oussama.FacultyPlanning.Controller;
 
 import com.oussama.FacultyPlanning.Model.Department;
-import com.oussama.FacultyPlanning.Model.Faculty;
 import com.oussama.FacultyPlanning.Repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -15,13 +15,18 @@ import java.util.Optional;
 public class DepartmentController {
     private final DepartmentRepository departmentRepository;
 
+    @GetMapping("faculties/{id}")
+    public ResponseEntity<List<Department>> getFacultyDepartments(@PathVariable Long id) {
+        return ResponseEntity.ok(departmentRepository.findDepartmentByFacultyId(id));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
         return ResponseEntity.ok(departmentRepository.getReferenceById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Department> createDepartment(@RequestBody Department department) {
+    public ResponseEntity<Department> deleteDepartment(@RequestBody Department department) {
         return ResponseEntity.ok(departmentRepository.save(department));
     }
 
@@ -30,7 +35,7 @@ public class DepartmentController {
         Optional<Department> departmentOptional = departmentRepository.findById(departmentRequest.getId());
         if (departmentOptional.isPresent()){
             Department department = departmentOptional.get();
-            department.setName(departmentRequest.getName());
+            if (departmentRequest.getName()!=null) department.setName(departmentRequest.getName());
             return ResponseEntity.ok(departmentRepository.save(department));
         } else {
             throw new RuntimeException("department not found");

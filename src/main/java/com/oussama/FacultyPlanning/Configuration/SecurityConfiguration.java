@@ -3,23 +3,19 @@ package com.oussama.FacultyPlanning.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -27,14 +23,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final CorsConfigurationSource corsConfigurationSource;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/logout", "/auth/login", "/auth/refresh-token", "/users/register", "/email-verification/**", "/password/forgot-password", "/password/reset-password", "/actuator/**")
                         .permitAll()
@@ -47,19 +41,20 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/auth/logout", "/auth/login", "/auth/refresh-token", "/users/add", "/email-verification/**", "/password/forgot-password", "/password/reset-password", "/actuator/**");
+        return (web) -> web.ignoring().requestMatchers("/auth/logout", "/auth/login", "/auth/refresh-token", "/users/register", "/email-verification/**", "/password/forgot-password", "/password/reset-password", "/actuator/**");
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("*"); // Add your frontend URL
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        // You cannot use wildcard "*" with allowCredentials(true)
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://http://192.168.0.105:3000"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -16,7 +16,7 @@ public class FacultyController {
     private final FacultyRepository facultyRepository;
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<List<Faculty>> getUserFaculties(@PathVariable Long id){
+    public ResponseEntity<Optional<Faculty>> getUserFaculties(@PathVariable Long id){
         return ResponseEntity.ok(facultyRepository.findFacultyByUserId(id));
     }
 
@@ -35,9 +35,9 @@ public class FacultyController {
         Optional<Faculty> facultyOptional = facultyRepository.findById(facultyRequest.getId());
         if (facultyOptional.isPresent()){
             Faculty faculty = facultyOptional.get();
-            faculty.setName(facultyRequest.getName());
-            faculty.setOpeningTime(facultyRequest.getOpeningTime());
-            faculty.setClosingTime(facultyRequest.getClosingTime());
+            if (facultyRequest.getName()!=null) faculty.setName(facultyRequest.getName());
+            if (facultyRequest.getOpeningTime()!=null) faculty.setOpeningTime(facultyRequest.getOpeningTime());
+            if (facultyRequest.getClosingTime()!=null) faculty.setClosingTime(facultyRequest.getClosingTime());
             return ResponseEntity.ok(facultyRepository.save(faculty));
         } else {
             throw new RuntimeException("faculty not found");
@@ -45,9 +45,24 @@ public class FacultyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> createFaculty(@PathVariable Long id) {
+    public ResponseEntity<String> deleteFaculty(@PathVariable Long id) {
         Optional<Faculty> faculty = facultyRepository.findById(id);
         faculty.ifPresent(facultyRepository::delete);
         return ResponseEntity.ok("faculty deleted successfully!");
+    }
+
+    @GetMapping("/{id}/users/count")
+    public ResponseEntity<Integer> countTeachers(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultyTeachers(id));
+    }
+
+    @GetMapping("/{id}/departments/count")
+    public ResponseEntity<Integer> countDepartments(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultyDepartments(id));
+    }
+
+    @GetMapping("/{id}/rooms/count")
+    public ResponseEntity<Integer> countRooms(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultyRooms(id));
     }
 }

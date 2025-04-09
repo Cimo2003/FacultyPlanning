@@ -1,5 +1,7 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,8 @@ public class Semester {
     private LocalDate semesterStart;
     private LocalDate semesterEnd;
     @ManyToOne
-    @JoinColumn(name = "specialty_id")
-    private Specialty specialty;
+    @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Faculty faculty;
 }

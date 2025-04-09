@@ -1,12 +1,12 @@
 package com.oussama.FacultyPlanning.Model;
 
-import com.oussama.FacultyPlanning.Enum.Day;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -19,7 +19,7 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated
-    private Day day;
+    private DayOfWeek day;
     private LocalTime fromTime;
     private LocalTime toTime;
     @ManyToOne

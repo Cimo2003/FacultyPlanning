@@ -1,11 +1,14 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oussama.FacultyPlanning.Enum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,17 +24,20 @@ public class User implements UserDetails {
     private Integer id;
     private String firstName;
     private String lastName;
+    @NaturalId(mutable = true)
     private String email;
     private String phone;
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Faculty> faculties;
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private Faculty adminFaculty;
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Role role = Role.TEACHER;
+    private Role role = Role.ADMIN;
     @Builder.Default
     private boolean isEnabled = false;
 

@@ -1,5 +1,8 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,11 +22,14 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime openingTime;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime closingTime;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
     @OneToMany(mappedBy = "faculty")
     private List<Room> rooms;
