@@ -13,11 +13,14 @@ public class EmailVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NaturalId(mutable = true)
     private String token;
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "TIMESTAMP(3)")
     private Date expirationDate;

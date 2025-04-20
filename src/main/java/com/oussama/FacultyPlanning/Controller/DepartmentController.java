@@ -26,7 +26,7 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Department> deleteDepartment(@RequestBody Department department) {
+    public ResponseEntity<Department> createDepartment(@RequestBody Department department) {
         return ResponseEntity.ok(departmentRepository.save(department));
     }
 

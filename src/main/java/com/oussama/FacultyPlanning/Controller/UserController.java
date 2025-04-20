@@ -2,6 +2,7 @@ package com.oussama.FacultyPlanning.Controller;
 
 import com.oussama.FacultyPlanning.Dto.ChangePasswordRequest;
 import com.oussama.FacultyPlanning.Event.RegistrationCompleteEvent;
+import com.oussama.FacultyPlanning.Model.Room;
 import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Dto.UserDto;
 import com.oussama.FacultyPlanning.Mapper.UserMapper;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -38,6 +40,22 @@ public class UserController {
     }
 
     @PatchMapping
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+        User user = userService.findUserById(userDto.getId());
+        if (userDto.getFirstName()!=null) user.setFirstName(userDto.getFirstName());
+        if (userDto.getLastName()!=null) user.setLastName(userDto.getLastName());
+        if (userDto.getPhone()!=null) user.setPhone(userDto.getPhone());
+        if (userDto.getEmail()!=null) user.setEmail(userDto.getEmail());
+        return ResponseEntity.ok(userMapper.userToUserDto(userService.updateUser(user)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestBody ChangePasswordRequest request,
             Principal connectedUser
@@ -45,4 +63,5 @@ public class UserController {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok().build();
     }
+
 }

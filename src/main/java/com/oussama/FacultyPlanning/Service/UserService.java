@@ -3,6 +3,7 @@ package com.oussama.FacultyPlanning.Service;
 import com.oussama.FacultyPlanning.Dto.ChangePasswordRequest;
 import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,10 +13,19 @@ import java.security.Principal;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+
+    public User findUserById(Integer id){
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()){
+            return userOptional.get();
+        }
+        else throw new RuntimeException("user not found");
+    }
 
     public User addNewUser(User user){
         return userRepository.save(user);
@@ -23,6 +33,15 @@ public class UserService {
 
     public User updateUser(User user) {
         return userRepository.save(user);
+    }
+
+    public void deleteUser(Integer id){
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()){
+            userRepository.deleteEmailVerificationByUserId(id);
+            userRepository.deleteById(id);
+        }
+        else throw new RuntimeException("User not Found");
     }
 
     public Optional<User> findUserByEmail(String email){

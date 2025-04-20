@@ -18,6 +18,10 @@ public class UserMapper {
             user.setLastName(userDto.getLastName());
             user.setEmail(userDto.getEmail());
             user.setPhone(userDto.getPhone());
+            user.setFaculty(userDto.getFaculty());
+            if (userDto.getRole()!=null) {
+                user.setRole(userDto.getRole());
+            }
             return user;
         }
     }
@@ -30,8 +34,10 @@ public class UserMapper {
             userDto.setId(user.getId());
             userDto.setFirstName(user.getFirstName());
             userDto.setLastName(user.getLastName());
+            userDto.setFullName(user.getFullName());
             userDto.setEmail(user.getEmail());
             userDto.setPhone(user.getPhone());
+            userDto.setRole(user.getRole());
             return userDto;
         }
     }

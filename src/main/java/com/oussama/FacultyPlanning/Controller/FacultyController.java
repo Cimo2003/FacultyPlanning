@@ -1,6 +1,11 @@
 package com.oussama.FacultyPlanning.Controller;
 
+import com.oussama.FacultyPlanning.Dto.UserDto;
+import com.oussama.FacultyPlanning.Mapper.UserMapper;
+import com.oussama.FacultyPlanning.Model.Department;
 import com.oussama.FacultyPlanning.Model.Faculty;
+import com.oussama.FacultyPlanning.Model.Room;
+import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Repository.FacultyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FacultyController {
     private final FacultyRepository facultyRepository;
-
+    private final UserMapper userMapper;
     @GetMapping("/users/{id}")
     public ResponseEntity<Optional<Faculty>> getUserFaculties(@PathVariable Long id){
         return ResponseEntity.ok(facultyRepository.findFacultyByUserId(id));
@@ -49,6 +54,21 @@ public class FacultyController {
         Optional<Faculty> faculty = facultyRepository.findById(id);
         faculty.ifPresent(facultyRepository::delete);
         return ResponseEntity.ok("faculty deleted successfully!");
+    }
+
+    @GetMapping("/{id}/users")
+    public ResponseEntity<List<UserDto>> getTeachers(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.getFacultyTeachers(id).stream().map(userMapper::userToUserDto).toList());
+    }
+
+    @GetMapping("/{id}/rooms")
+    public ResponseEntity<List<Room>> getRooms(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.getFacultyRooms(id));
+    }
+
+    @GetMapping("/{id}/departments")
+    public ResponseEntity<List<Department>> getDepartments(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.getFacultyDepartments(id));
     }
 
     @GetMapping("/{id}/users/count")

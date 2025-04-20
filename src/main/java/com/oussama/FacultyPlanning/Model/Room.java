@@ -20,7 +20,6 @@ public class Room {
     private Long id;
     private String code;
     @Enumerated
-    @Column(updatable = false)
     private RoomType type;
     @ManyToOne
     @JoinColumn(name = "faculty_id")

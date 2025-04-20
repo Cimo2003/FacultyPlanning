@@ -32,8 +32,10 @@ public class User implements UserDetails {
     private String password;
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Faculty adminFaculty;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Faculty faculty;
     @Builder.Default
     @Enumerated(EnumType.STRING)

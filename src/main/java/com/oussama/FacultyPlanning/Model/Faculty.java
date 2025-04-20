@@ -22,8 +22,10 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "opening_time")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime openingTime;
+    @Column(name = "closing_time")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime closingTime;
     @OneToOne
