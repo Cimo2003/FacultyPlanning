@@ -1,5 +1,6 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oussama.FacultyPlanning.Enum.RoomType;
 import jakarta.persistence.*;
@@ -8,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,4 +37,13 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private Set<Group> groups = new HashSet<>();
     private short hours_per_group;
+    @Enumerated
+    private DayOfWeek day;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime endTime;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 }

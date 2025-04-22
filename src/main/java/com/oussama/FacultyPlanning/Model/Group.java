@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "student_group")
 @Builder
 @Data
 @AllArgsConstructor
@@ -21,8 +22,8 @@ public class Group {
     private Long id;
     private String code;
     @ManyToOne
-    @JoinColumn(name = "specialty_id")
-    private Specialty specialty;
+    @JoinColumn(name = "section_id")
+    private Section section;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "course_groups",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),

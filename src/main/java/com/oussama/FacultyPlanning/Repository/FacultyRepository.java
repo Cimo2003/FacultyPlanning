@@ -33,4 +33,13 @@ public interface FacultyRepository extends JpaRepository<Faculty, Long> {
 
     @Query(value = "SELECT COUNT(*) FROM `department` WHERE faculty_id = :faculty_id", nativeQuery = true)
     int countFacultyDepartments(@Param("faculty_id") Long facultyId);
+
+    @Query(value = "SELECT COUNT(*) FROM `subject` WHERE faculty_id = :faculty_id", nativeQuery = true)
+    int countFacultySubjects(@Param("faculty_id") Long facultyId);
+
+    @Query("SELECT COUNT(s) FROM Section s WHERE s.department.faculty.id=:faculty_id")
+    int countFacultySections(@Param("faculty_id") Long facultyId);
+
+    @Query("SELECT COUNT(g) FROM Group g WHERE g.section.department.faculty.id=:faculty_id")
+    int countFacultyGroups(@Param("faculty_id") Long facultyId);
 }

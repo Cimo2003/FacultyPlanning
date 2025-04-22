@@ -16,7 +16,12 @@ public class GroupController {
     private final GroupRepository groupRepository;
     @GetMapping("specialties/{id}")
     public ResponseEntity<List<Group>> getSpecialtyGroups(@PathVariable Long id) {
-        return ResponseEntity.ok(groupRepository.findGroupBySpecialtyId(id));
+        return ResponseEntity.ok(groupRepository.findGroupBySectionId(id));
+    }
+
+    @GetMapping("faculties/{id}")
+    public ResponseEntity<List<Group>> getFacultyGroups(@PathVariable Long id) {
+        return ResponseEntity.ok(groupRepository.findGroupByFacultyId(id));
     }
 
     @GetMapping("/{id}")

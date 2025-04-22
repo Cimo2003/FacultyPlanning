@@ -39,7 +39,10 @@ public class CourseController {
             if (courseDetails.getUser()!=null) course.setUser(courseDetails.getUser());
             if (courseDetails.getGroups()!=null) course.setGroups(courseDetails.getGroups());
             if (courseDetails.getSubject()!=null) course.setSubject(courseDetails.getSubject());
-            course.setHours_per_group(courseDetails.getHours_per_group());
+            if (courseDetails.getDay()!=null) course.setDay(courseDetails.getDay());
+            if (courseDetails.getStartTime()!=null) course.setStartTime(courseDetails.getStartTime());
+            if (courseDetails.getEndTime()!=null) course.setEndTime(courseDetails.getEndTime());
+            if(courseDetails.getHours_per_group()!=0) course.setHours_per_group(courseDetails.getHours_per_group());
             return ResponseEntity.ok(courseRepository.save(course));
         } else {
             throw new RuntimeException("course not found");

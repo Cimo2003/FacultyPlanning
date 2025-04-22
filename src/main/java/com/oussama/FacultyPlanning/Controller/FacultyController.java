@@ -85,4 +85,20 @@ public class FacultyController {
     public ResponseEntity<Integer> countRooms(@PathVariable Long id){
         return ResponseEntity.ok(facultyRepository.countFacultyRooms(id));
     }
+
+    @GetMapping("/{id}/subjects/count")
+    public ResponseEntity<Integer> countSubjects(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultySubjects(id));
+    }
+
+    @GetMapping("/{id}/sections/count")
+    public ResponseEntity<Integer> countSections(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultySections(id));
+    }
+
+    @GetMapping("/{id}/groups/count")
+    public ResponseEntity<Integer> countGroups(@PathVariable Long id){
+        return ResponseEntity.ok(facultyRepository.countFacultyGroups(id));
+    }
+
 }
