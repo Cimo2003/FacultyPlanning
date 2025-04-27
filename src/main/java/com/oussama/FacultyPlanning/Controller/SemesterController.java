@@ -25,6 +25,11 @@ public class SemesterController {
         return ResponseEntity.ok(semesterRepository.getReferenceById(id));
     }
 
+    @GetMapping("/faculties/{id}/current")
+    public ResponseEntity<Optional<Semester>> getCurrentSemester(@PathVariable Long id) {
+        return ResponseEntity.ok(semesterRepository.findCurrentSemesterByFacultyId(id));
+    }
+
     @PostMapping
     public ResponseEntity<Semester> createSemester(@RequestBody Semester semester) {
         return ResponseEntity.ok(semesterRepository.save(semester));
