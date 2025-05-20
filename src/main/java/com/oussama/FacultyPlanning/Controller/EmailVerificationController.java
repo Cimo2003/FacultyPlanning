@@ -23,7 +23,7 @@ public class EmailVerificationController {
     private final UserService userService;
 
     @GetMapping("/{id}/{token}/{expiration}")
-    public ResponseEntity<String> verifyEmail(@PathVariable Integer id, @PathVariable String token, @PathVariable Long expiration){
+    public ResponseEntity<String> verifyEmail(@PathVariable Long id, @PathVariable String token, @PathVariable Long expiration){
         Optional<EmailVerification> emailVerification = emailVerificationService.findEmailVerificationByToken(token);
         Calendar calendar = Calendar.getInstance();
         long exp = expiration - expiration % 1000;

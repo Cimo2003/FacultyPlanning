@@ -10,10 +10,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByEmail(String email);
+
+    @Query("SELECT u FROM User u WHERE CONCAT(u.firstName, ' ', u.lastName) = :fullName AND u.faculty.id = :faculty_id")
+    Optional<User> findByFullNameAndFacultyId(@Param("fullName") String fullName, @Param("faculty_id") Long facultyId);
 
     @Modifying
     @Query(value = "DELETE FROM `email_verification` WHERE user_id = :user_id", nativeQuery = true)
-    void deleteEmailVerificationByUserId(@Param("user_id") Integer userId);
+    void deleteEmailVerificationByUserId(@Param("user_id") Long userId);
 }

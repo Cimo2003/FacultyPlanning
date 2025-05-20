@@ -19,7 +19,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public User findUserById(Integer id){
+    public User findUserById(Long id){
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()){
             return userOptional.get();
@@ -35,7 +35,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(Integer id){
+    public void deleteUser(Long id){
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()){
             userRepository.deleteEmailVerificationByUserId(id);

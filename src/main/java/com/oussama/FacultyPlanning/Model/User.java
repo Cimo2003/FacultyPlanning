@@ -1,5 +1,6 @@
 package com.oussama.FacultyPlanning.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oussama.FacultyPlanning.Enum.Role;
@@ -21,27 +22,36 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
     private String firstName;
     private String lastName;
     @NaturalId(mutable = true)
     private String email;
     private String phone;
+
     @JsonIgnoreProperties(allowSetters = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Faculty adminFaculty;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
     @JsonIgnoreProperties(allowSetters = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Faculty faculty;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;
+
     @Builder.Default
     private boolean isEnabled = false;
+
+    @JsonIgnore
+    private Collection<? extends GrantedAuthority> authorities;
 
     public String getFullName() {
         return this.firstName+" "+this.lastName;

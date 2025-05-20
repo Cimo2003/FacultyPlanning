@@ -5,7 +5,6 @@ import com.oussama.FacultyPlanning.Mapper.UserMapper;
 import com.oussama.FacultyPlanning.Model.Department;
 import com.oussama.FacultyPlanning.Model.Faculty;
 import com.oussama.FacultyPlanning.Model.Room;
-import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Repository.FacultyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,8 @@ import java.util.Optional;
 public class FacultyController {
     private final FacultyRepository facultyRepository;
     private final UserMapper userMapper;
-    @GetMapping("/users/{id}")
+
+    @GetMapping("/admin/{id}")
     public ResponseEntity<Optional<Faculty>> getUserFaculties(@PathVariable Long id){
         return ResponseEntity.ok(facultyRepository.findFacultyByUserId(id));
     }

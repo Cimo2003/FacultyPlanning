@@ -21,22 +21,35 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Column(name = "opening_time")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime openingTime;
+
     @Column(name = "closing_time")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime closingTime;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties(allowSetters = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
+
     @OneToMany(mappedBy = "faculty")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Room> rooms;
+
     @OneToMany(mappedBy = "faculty")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Department> departments;
+
     @OneToMany(mappedBy = "faculty")
+    @JsonIgnoreProperties(allowSetters = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<User> teachers;
 }

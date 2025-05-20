@@ -1,7 +1,5 @@
 package com.oussama.FacultyPlanning.Model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oussama.FacultyPlanning.Enum.RoomType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,10 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Builder
@@ -33,17 +28,18 @@ public class Course {
     private Subject subject;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private User user;
-    @ManyToMany(mappedBy = "courses")
-    private Set<Group> groups = new HashSet<>();
-    private short hours_per_group;
-    @Enumerated
-    private DayOfWeek day;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime startTime;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime endTime;
+    private User teacher;
+    @ManyToMany
+    @JoinTable(name = "course_groups",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id")
+    )
+    private List<Group> groups;
+    private String color;
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+    @ManyToOne
+    @JoinColumn(name = "timeslot_id")
+    private Timeslot timeslot;
 }

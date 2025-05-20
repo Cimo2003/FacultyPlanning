@@ -6,6 +6,7 @@ import com.oussama.FacultyPlanning.Model.Room;
 import com.oussama.FacultyPlanning.Model.User;
 import com.oussama.FacultyPlanning.Dto.UserDto;
 import com.oussama.FacultyPlanning.Mapper.UserMapper;
+import com.oussama.FacultyPlanning.Service.ExcelImportService;
 import com.oussama.FacultyPlanning.Service.UserService;
 import com.oussama.FacultyPlanning.Utility.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +16,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +29,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
+    private final ExcelImportService excelImportService;
     private final ApplicationEventPublisher publisher;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -32,11 +37,20 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto, final HttpServletRequest request) {
         User user = userMapper.userDtoToUser(userDto);
-        System.out.println("DTO:"+userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User newUser = userService.addNewUser(user);
         publisher.publishEvent(new RegistrationCompleteEvent(user, emailService.applicationUrl(request)));
         return ResponseEntity.ok(userMapper.userToUserDto(newUser));
+    }
+
+    @PostMapping("/teachers/import")
+    public ResponseEntity<String> importTeachers(@RequestParam("file") MultipartFile file, @RequestParam("facultyId") Long facultyId) {
+        try {
+            List<User> teachers = excelImportService.importTeachersFromExcel(file, facultyId);
+            return ResponseEntity.ok("Successfully imported " + teachers.size() + " teachers");
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Error processing file: " + e.getMessage());
+        }
     }
 
     @PatchMapping
@@ -45,12 +59,11 @@ public class UserController {
         if (userDto.getFirstName()!=null) user.setFirstName(userDto.getFirstName());
         if (userDto.getLastName()!=null) user.setLastName(userDto.getLastName());
         if (userDto.getPhone()!=null) user.setPhone(userDto.getPhone());
-        if (userDto.getEmail()!=null) user.setEmail(userDto.getEmail());
         return ResponseEntity.ok(userMapper.userToUserDto(userService.updateUser(user)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id){
+    public ResponseEntity<String> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
     }

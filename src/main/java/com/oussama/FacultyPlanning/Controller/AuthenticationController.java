@@ -28,7 +28,8 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<HashMap<String,String>> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<HashMap<String,String>> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest)
+            throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
