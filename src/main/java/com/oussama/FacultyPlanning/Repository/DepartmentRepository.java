@@ -16,16 +16,16 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     List<Department> findDepartmentByFacultyId(Long facultyId);
 
     @Query("SELECT d FROM Department d WHERE d.faculty.id=:faculty_id AND d.name=:name")
-    Optional<Department> findDepartmentByFacultyIdAndName(Long facultyId, String name);
+    Optional<Department> findDepartmentByFacultyIdAndName(@Param("faculty_id") Long facultyId, @Param("name") String name);
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM Group g WHERE g.section.department.id=:id")
+    @Query(value = "DELETE g FROM student_group g INNER JOIN section s ON g.section_id = s.id WHERE s.department_id = :id", nativeQuery = true)
     void deleteGroupsByDepartmentId(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM Group g WHERE g.section.department.id IN (:ids)")
+    @Query(value = "DELETE g FROM student_group g INNER JOIN section s ON g.section_id = s.id WHERE s.department_id IN (:ids)", nativeQuery = true)
     void deleteGroupsByDepartmentIdIn(@Param("ids") List<Long> ids);
 
     @Modifying

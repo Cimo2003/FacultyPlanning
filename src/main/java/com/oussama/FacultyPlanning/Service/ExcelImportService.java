@@ -35,6 +35,7 @@ public class ExcelImportService {
     private final PasswordEncoder passwordEncoder;
     private final CourseRepository courseRepository;
     private final SemesterRepository semesterRepository;
+    private final TimeslotRepository timeslotRepository;
 
     public void importCourses(MultipartFile file, Long facultyId) throws IOException {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
@@ -53,11 +54,14 @@ public class ExcelImportService {
             String groupsStr = getStringCellValue(row.getCell(2));
             String courseTypeStr = getStringCellValue(row.getCell(3));
 
+            // Optional columns - handle gracefully if empty or null
+            String timeslotIdStr = getOptionalStringCellValue(row.getCell(4));
+            String roomCode = getOptionalStringCellValue(row.getCell(5));
+
             System.out.println("i am here");
             Subject subject = subjectRepository.findSubjectByTitleAndFacultyId(subjectName, facultyId)
                     .orElseThrow(() -> new RuntimeException("Subject not found: " + subjectName));
             System.out.println(subject.getId());
-
 
             User teacher = userRepository.findByFullNameAndFacultyId(teacherName, facultyId)
                     .orElseThrow(() -> new RuntimeException("Teacher not found: " + teacherName));
@@ -87,6 +91,29 @@ public class ExcelImportService {
 
             RoomType roomType = RoomType.valueOf(courseTypeStr.trim().toUpperCase());
 
+            // Handle optional timeslot
+            Timeslot timeslot = null;
+            if (timeslotIdStr != null && !timeslotIdStr.trim().isEmpty()) {
+                try {
+                    Long timeslotId = Long.parseLong(timeslotIdStr.trim());
+                    timeslot = timeslotRepository.findById(timeslotId).orElse(null);
+                    if (timeslot == null) {
+                        System.out.println("Warning: Timeslot with ID " + timeslotId + " not found");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Warning: Invalid timeslot ID format: " + timeslotIdStr);
+                }
+            }
+
+            // Handle optional room
+            Room room = null;
+            if (roomCode != null && !roomCode.trim().isEmpty()) {
+                room = (Room) roomRepository.findByCodeAndFacultyId(roomCode.trim(), facultyId).orElse(null);
+                if (room == null) {
+                    System.out.println("Warning: Room with code " + roomCode + " not found in faculty " + facultyId);
+                }
+            }
+
             String color = colors[random.nextInt(colors.length)];
 
             Course course = Course.builder()
@@ -96,11 +123,32 @@ public class ExcelImportService {
                     .groups(groups)
                     .color(color)
                     .semester(semester)
+                    .timeslot(timeslot)  // Will be null if not provided or not found
+                    .room(room)          // Will be null if not provided or not found
                     .build();
 
             courseRepository.save(course);
         }
         workbook.close();
+    }
+
+    // Helper method to safely get string cell values for optional columns
+    private String getOptionalStringCellValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+
+        return switch (cell.getCellType()) {
+            case STRING -> {
+                String value = cell.getStringCellValue();
+                yield (value == null || value.trim().isEmpty()) ? null : value.trim();
+            }
+            case NUMERIC ->
+                // Handle numeric values (like IDs) as strings
+                    String.valueOf((long) cell.getNumericCellValue());
+            case BLANK -> null;
+            default -> null;
+        };
     }
 
     public List<User> importTeachersFromExcel(MultipartFile file, Long facultyId) throws IOException {
@@ -335,12 +383,14 @@ public class ExcelImportService {
     }
 
     private Section parseSectionRow(Row row, Long facultyId) {
+        System.out.println(facultyId);
         try {
             Section section = new Section();
             section.setName(getStringCellValue(row.getCell(0)));
             section.setLevel(LVL.valueOf(getStringCellValue(row.getCell(1)).toUpperCase()));
             Department department = departmentRepository.findDepartmentByFacultyIdAndName(facultyId, getStringCellValue(row.getCell(2)))
                     .orElseThrow(() -> new RuntimeException("Department not found with faculty id: " + facultyId));
+            System.out.println(department.getName());
             section.setDepartment(department);
             return section;
         } catch (Exception e) {

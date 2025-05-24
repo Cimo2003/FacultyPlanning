@@ -21,6 +21,7 @@ public class SectionController {
 
     @PostMapping("/import")
     public ResponseEntity<?> importSections(@RequestParam("file") MultipartFile file, @RequestParam("facultyId") String facultyId) {
+        System.out.println(facultyId);
         try {
             List<Section> importedSections = excelImportService.importSectionsFromExcel(file, Long.valueOf(facultyId));
             return ResponseEntity.ok(importedSections);
