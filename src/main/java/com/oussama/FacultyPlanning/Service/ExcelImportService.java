@@ -42,7 +42,7 @@ public class ExcelImportService {
         Optional<Semester> semesterOptional = semesterRepository.findCurrentSemesterByFacultyId(facultyId);
         if (semesterOptional.isEmpty()) throw new RuntimeException("no current semester found");
         Semester semester = semesterOptional.get();
-        String[] colors = {"bg-yellow-300", "bg-blue-300", "bg-green-300", "bg-purple-300", "bg-red-300", "bg-amber-300", "bg-blue-400", "bg-green-400"};
+        String[] colors = {"bg-yellow-300", "bg-blue-300", "bg-green-300", "bg-purple-300", "bg-red-300", "bg-amber-300", "bg-blue-400", "bg-green-400", "bg-emerald-300", "bg-orange-300"};
         Random random = new Random();
 
         for (Row row : sheet) {

@@ -1,7 +1,6 @@
 package com.oussama.FacultyPlanning.Controller;
 
 import com.oussama.FacultyPlanning.Model.Course;
-import com.oussama.FacultyPlanning.Model.Department;
 import com.oussama.FacultyPlanning.Model.Group;
 import com.oussama.FacultyPlanning.Model.Semester;
 import com.oussama.FacultyPlanning.Repository.CourseRepository;
@@ -50,6 +49,16 @@ public class CourseController {
     @GetMapping("/semesters/{id}")
     public ResponseEntity<List<Course>> getCourseBySemesterId(@PathVariable Long id) {
         return ResponseEntity.ok(courseRepository.findCourseBySemesterId(id));
+    }
+
+    @GetMapping("/semesters/{semesterId}/users/{userId}")
+    public ResponseEntity<List<Course>> getTeacherCourses(@PathVariable("userId") Long userId , @PathVariable("semesterId") Long semesterId) {
+        return ResponseEntity.ok(courseRepository.findCourseByTeacherIdAndSemesterId(userId, semesterId));
+    }
+
+    @GetMapping("/users/{id}/count")
+    public ResponseEntity<Integer> getTeacherCourses(@PathVariable Long id) {
+        return ResponseEntity.ok(courseRepository.countTeacherCoursesForToday(id));
     }
 
     @GetMapping("faculties/{id}/semesters/current")

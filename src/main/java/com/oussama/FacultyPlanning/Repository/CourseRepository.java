@@ -59,5 +59,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             @Param("groupIds") List<Long> groupIds,
             @Param("timeslotId") Long timeslotId);
 
-}
+    @Query("SELECT c FROM Course c WHERE c.teacher.id = :teacherId AND c.semester.id = :semesterId")
+    List<Course> findCourseByTeacherIdAndSemesterId(@Param("teacherId") Long teacherId, @Param("semesterId") Long semesterId);
 
+    @Query(value = "SELECT COUNT(*) FROM course c " +
+            "JOIN semester s ON c.semester_id = s.id " +
+            "JOIN timeslot t ON c.timeslot_id = t.id " +
+            "WHERE c.teacher_id = :teacherId " +
+            "AND CURRENT_DATE BETWEEN s.semester_start AND s.semester_end " +
+            "AND DAYOFWEEK(CURRENT_DATE) = t.day + 1",
+            nativeQuery = true)
+    int countTeacherCoursesForToday(@Param("teacherId") Long teacherId);
+}

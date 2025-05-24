@@ -60,7 +60,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> createFaculty(@PathVariable Long id) {
+    public ResponseEntity<String> deleteDepartment(@PathVariable Long id) {
         Optional<Department> department = departmentRepository.findById(id);
         if (department.isPresent()){
             departmentRepository.deleteGroupsByDepartmentId(id);
