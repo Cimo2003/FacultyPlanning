@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -18,6 +19,7 @@ import java.time.LocalTime;
 public class Timeslot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @PlanningId
     private Long id;
     @Enumerated
     private DayOfWeek day;

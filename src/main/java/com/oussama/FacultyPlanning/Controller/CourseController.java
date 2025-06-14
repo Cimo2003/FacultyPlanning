@@ -1,9 +1,11 @@
 package com.oussama.FacultyPlanning.Controller;
 
 import com.oussama.FacultyPlanning.Model.Course;
+import com.oussama.FacultyPlanning.Model.Faculty;
 import com.oussama.FacultyPlanning.Model.Group;
 import com.oussama.FacultyPlanning.Model.Semester;
 import com.oussama.FacultyPlanning.Repository.CourseRepository;
+import com.oussama.FacultyPlanning.Repository.FacultyRepository;
 import com.oussama.FacultyPlanning.Repository.SemesterRepository;
 import com.oussama.FacultyPlanning.Service.ExcelImportService;
 import lombok.RequiredArgsConstructor;
@@ -90,6 +92,16 @@ public class CourseController {
         } else {
             throw new RuntimeException("course not found");
         }
+    }
+
+    @PatchMapping("/unassign")
+    public ResponseEntity<List<Course>> unassignAll(@RequestParam("semester_id") Long semesterId){
+        List<Course> courses = courseRepository.findCourseBySemesterId(semesterId);
+        courses.forEach(course -> {
+            course.setRoom(null);
+            course.setTimeslot(null);
+        });
+        return ResponseEntity.ok(courseRepository.saveAll(courses));
     }
 
     @PatchMapping("/assign")

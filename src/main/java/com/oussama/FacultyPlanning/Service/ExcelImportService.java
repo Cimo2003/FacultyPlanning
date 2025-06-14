@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Transactional
@@ -68,7 +65,7 @@ public class ExcelImportService {
 
             System.out.println(teacher.getId());
 
-            List<Group> groups = new ArrayList<>();
+            Set<Group> groups = new HashSet<>();
             if (!groupsStr.isEmpty()) {
                 String[] groupEntries = groupsStr.split(",");
                 for (String entry : groupEntries) {

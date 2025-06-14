@@ -1,0 +1,30 @@
+<solver>
+    <solutionClass>com.oussama.FacultyPlanning.Model.Timetable</solutionClass>
+    <entityClass>com.oussama.FacultyPlanning.Model.Course</entityClass>
+
+    <scoreDirectorFactory>
+        <constraintProviderClass>com.oussama.FacultyPlanning.Solver.TimetableConstraintProvider</constraintProviderClass>
+    </scoreDirectorFactory>
+
+    <termination>
+        <secondsSpentLimit>300</secondsSpentLimit>
+        <bestScoreLimit>0hard/0soft</bestScoreLimit>
+    </termination>
+
+    <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    </constructionHeuristic>
+
+    <localSearch>
+        <unionMoveSelector>
+            <changeMoveSelector/>
+            <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+            <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+            <acceptedCountLimit>1000</acceptedCountLimit>
+        </forager>
+    </localSearch>
+</solver>
