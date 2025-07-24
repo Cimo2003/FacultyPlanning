@@ -185,7 +185,7 @@ public class ExcelImportService {
                     teacherPasswords.add(rawPassword);
 
                     // Send email asynchronously
-                    //emailService.sendTeacherCredentials(teacher.getEmail(), rawPassword);
+                    //emailService.sendCredentials(teacher.getEmail(), rawPassword);
 
                 } catch (Exception e) {
                     System.err.println("Error importing teacher at row {"+row.getRowNum()+"}: {"+e.getMessage()+"}");

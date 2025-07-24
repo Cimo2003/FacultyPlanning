@@ -17,7 +17,7 @@ public class EmailService {
     }
 
     @Async("emailTaskExecutor")
-    public void sendTeacherCredentials(String email, String password) {
+    public void sendCredentials(String email, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Your Faculty Portal Credentials");

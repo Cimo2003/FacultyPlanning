@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
+    @PlanningId
     private Long id;
 
     private String name;

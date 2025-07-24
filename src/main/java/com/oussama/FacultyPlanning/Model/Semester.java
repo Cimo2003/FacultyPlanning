@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 public class Semester {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @PlanningId
     private Long id;
     private int number;
     private LocalDate semesterStart;

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 @Entity
 @Builder
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @PlanningId
     private Long id;
     private String code;
     private String title;

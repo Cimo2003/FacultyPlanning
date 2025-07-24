@@ -7,8 +7,7 @@
     </scoreDirectorFactory>
 
     <termination>
-        <secondsSpentLimit>300</secondsSpentLimit>
-        <bestScoreLimit>0hard/0soft</bestScoreLimit>
+        <secondsSpentLimit>60</secondsSpentLimit>
     </termination>
 
     <constructionHeuristic>
@@ -19,12 +18,22 @@
         <unionMoveSelector>
             <changeMoveSelector/>
             <swapMoveSelector/>
+            <pillarSwapMoveSelector>
+                <subPillarType>ALL</subPillarType>
+                <variableName>timeslot</variableName>
+            </pillarSwapMoveSelector>
         </unionMoveSelector>
+
         <acceptor>
-            <lateAcceptanceSize>400</lateAcceptanceSize>
+            <simulatedAnnealingStartingTemperature>2hard/400soft</simulatedAnnealingStartingTemperature>
         </acceptor>
+
         <forager>
             <acceptedCountLimit>1000</acceptedCountLimit>
-        </forager>
+            <unimprovedStepCountLimit>20000000</unimprovedStepCountLimit> </forager>
+        <termination>
+            <unimprovedSecondsSpentLimit>20</unimprovedSecondsSpentLimit>
+        </termination>
     </localSearch>
+
 </solver>

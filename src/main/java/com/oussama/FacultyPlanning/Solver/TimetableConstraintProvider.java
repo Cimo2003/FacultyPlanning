@@ -1,9 +1,14 @@
 package com.oussama.FacultyPlanning.Solver;
 
-import com.oussama.FacultyPlanning.Model.*;
+import com.oussama.FacultyPlanning.Model.Course;
+import com.oussama.FacultyPlanning.Model.Group;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.stream.*;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.Joiners;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,12 +17,17 @@ public class TimetableConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
+                // Hard constraints
                 roomConflict(factory),
                 teacherConflict(factory),
                 groupConflict(factory),
                 roomTypeMismatch(factory),
                 roomAvailability(factory),
-//                teacherAvailability(factory)
+
+                // Soft constraints
+                teacherTimeEfficiency(factory),
+                groupTimeEfficiency(factory),
+                teacherRoomStability(factory)
         };
     }
 
@@ -75,27 +85,49 @@ public class TimetableConstraintProvider implements ConstraintProvider {
                 .asConstraint("Room not available");
     }
 
-    // Soft: Minimize teacher gaps between classes
-//    private Constraint teacherAvailability(ConstraintFactory factory) {
-//        return factory.forEachUniquePair(Course.class,
-//                        Joiners.equal(Course::getTeacher),
-//                        Joiners.equal(Course::getTimeslot, (t1, t2) -> t1.getDay() == t2.getDay()))
-//                        .filter((c1, c2) -> {
-//                            LocalTime gap = calculateTimeGap(c1.getTimeslot(), c2.getTimeslot());
-//                            return gap.compareTo(Duration.ofHours(1)) > 0;
-//                        })
-//                        .penalize(HardSoftScore.ONE_SOFT,
-//                                (c1, c2) -> calculateGapPenalty(c1.getTimeslot(), c2.getTimeslot()))
-//                        .asConstraint("Teacher time gap");
-//    }
+    // Soft: Teacher schedule should be compact
+    private Constraint teacherTimeEfficiency(ConstraintFactory factory) {
+        return factory.forEachUniquePair(Course.class,
+                        Joiners.equal(Course::getTeacher),
+                        Joiners.equal(course -> course.getTimeslot().getDay()))
+                .filter((course1, course2) -> {
+                    Duration between = Duration.between(course1.getTimeslot().getToTime(), course2.getTimeslot().getFromTime());
+                    return !between.isNegative() && between.compareTo(Duration.ofMinutes(90)) > 0;
+                })
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (course1, course2) -> {
+                            Duration between = Duration.between(course1.getTimeslot().getToTime(), course2.getTimeslot().getFromTime());
+                            return (int) (between.toMinutes() / 90);
+                        })
+                .asConstraint("Teacher time efficiency");
+    }
 
-    // Helper methods
-    private boolean hasCommonGroup(Course c1, Course c2) {
-        Set<Long> c1GroupIds = c1.getGroups().stream()
-                .map(Group::getId)
-                .collect(Collectors.toSet());
-        return c2.getGroups().stream()
-                .map(Group::getId)
-                .anyMatch(c1GroupIds::contains);
+    // Soft: Group schedule should be compact
+    private Constraint groupTimeEfficiency(ConstraintFactory factory) {
+        return factory.forEachUniquePair(Course.class,
+                        Joiners.equal(course -> course.getTimeslot().getDay()),
+                        Joiners.filtering((c1, c2) -> {
+                            Set<Long> c1GroupIds = c1.getGroups().stream().map(Group::getId).collect(Collectors.toSet());
+                            return c2.getGroups().stream().map(Group::getId).anyMatch(c1GroupIds::contains);
+                        }))
+                .filter((course1, course2) -> {
+                    Duration between = Duration.between(course1.getTimeslot().getToTime(), course2.getTimeslot().getFromTime());
+                    return !between.isNegative() && between.compareTo(Duration.ofMinutes(90)) > 0;
+                })
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (course1, course2) -> {
+                            Duration between = Duration.between(course1.getTimeslot().getToTime(), course2.getTimeslot().getFromTime());
+                            return (int) (between.toMinutes() / 90);
+                        })
+                .asConstraint("Group time efficiency");
+    }
+
+    // Soft: A teacher should preferably teach in the same room
+    private Constraint teacherRoomStability(ConstraintFactory factory) {
+        return factory.forEach(Course.class)
+                .groupBy(Course::getTeacher,
+                        Course::getRoom)
+                .penalize(HardSoftScore.ONE_SOFT)
+                .asConstraint("Teacher room stability");
     }
 }
